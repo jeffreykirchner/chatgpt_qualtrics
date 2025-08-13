@@ -153,22 +153,3 @@ scroll_update: function scroll_update()
         app.instruction_pages_show_scroll = true;
     }
 },
-
-
-/*
-* send chat instructions
-*/
-send_chat_instructions: function send_chat_instructions(chat_text_processed)
-{
-
-    if(app.session_player.current_instruction != app.instructions.action_page_3) return;
-
-    let message_data = {
-        "status": "success",
-        "text": chat_text_processed,
-        "sender_id": app.session_player.id,       
-        "nearby_players": [],
-    };
-
-    app.take_update_chat(message_data);
-},

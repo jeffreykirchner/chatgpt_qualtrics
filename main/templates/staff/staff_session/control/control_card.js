@@ -116,34 +116,6 @@ start_timer: function start_timer(){
     app.send_message("start_timer", {action : action});
 },
 
-/** take start experiment response
- * @param message_data {json}
-*/
-take_start_timer: function take_start_timer(message_data){
-   
-    if(worker) worker.terminate();
-    
-    app.session.world_state.timer_running = message_data.timer_running;
-
-    if(app.session.world_state.timer_running)
-    {
-        worker = new Worker("/static/js/worker_timer.js");
-
-        worker.onmessage = function (evt) {   
-            app.send_message("continue_timer", {});
-        };
-
-        worker.postMessage(0);
-    }
-},
-
-/**
- * stop local timer pulse 
- */
-take_stop_timer_pulse: function take_stop_timer_pulse(){
-    if(worker) worker.terminate();
-},
-
 /**reset experiment, remove all bids, asks and trades
 */
 end_early: function end_early(){

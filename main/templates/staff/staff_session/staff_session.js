@@ -6,9 +6,6 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-//let app.session.world_state = {};
-{%include "subject/subject_home/the_stage/pixi_globals.js"%}
-
 let worker = null;
 
 //vue app
@@ -131,18 +128,7 @@ let app = Vue.createApp({
                     break; 
                 case "update_next_phase":
                     app.take_update_next_phase(message_data);
-                    break; 
-                case "update_chat":
-                    app.take_update_chat(message_data);
-                    break;
-                case "update_time":
-                    app.take_update_time(message_data);
-                    break;
-                case "start_timer":
-                    app.take_start_timer(message_data);
                     break;   
-                case "stop_timer_pulse":
-                    app.take_stop_timer_pulse(message_data);
                 case "update_connection_status":
                     app.take_update_connection_status(message_data);
                     break;   
@@ -200,18 +186,6 @@ let app = Vue.createApp({
                 case "update_target_location_update":
                     app.take_target_location_update(message_data);
                     break;
-                case "update_collect_token":
-                    app.take_collect_token(message_data);
-                    break;
-                case "update_tractor_beam":
-                    app.take_tractor_beam(message_data);
-                    break;
-                case "update_interaction":
-                    app.take_interaction(message_data);
-                    break;
-                case "update_cancel_interaction":
-                    app.take_cancel_interaction(message_data);
-                    break;   
                 case "load_session_events":
                     app.take_load_session_events(message_data);
                     break; 
@@ -279,7 +253,6 @@ let app = Vue.createApp({
                 }
             });
             
-            app.setup_pixi();
             app.first_load_done = true;
         },
 
@@ -288,8 +261,7 @@ let app = Vue.createApp({
          */
         do_reload: function do_reload()
         {
-            app.setup_pixi_tokens_for_current_period();
-            app.setup_pixi_subjects();
+
         },
 
         /** send winsock request to get session info
@@ -303,9 +275,6 @@ let app = Vue.createApp({
         */
         take_get_session: function take_get_session(message_data){
             
-            app.destroy_pixi_tokens_for_all_periods();
-            app.destroy_setup_pixi_subjects();
-
             app.session = message_data;
 
             app.session.world_state =  app.session.world_state;
@@ -334,9 +303,6 @@ let app = Vue.createApp({
             }
             
             app.update_phase_button_text();
-            let v = {};
-            v.timer_running = app.session.world_state.timer_running;
-            app.take_start_timer(v); 
         },
 
         /**update text of move on button based on current state
@@ -366,79 +332,6 @@ let app = Vue.createApp({
                 }
             }
         },
-
-        /** take updated data from goods being moved by another player
-        *    @param message_data {json} session day in json format
-        */
-        take_update_chat: function take_update_chat(message_data){
-            
-            if(message_data.status == "success")
-            {
-                let text = message_data.text;
-                
-                app.session.world_state.session_players[message_data.sender_id].show_chat = true;    
-                app.session.world_state.session_players[message_data.sender_id].chat_time = Date.now();
-                pixi_avatars[message_data.sender_id].chat.bubble_text.text = text;
-            }
-            else
-            {
-               
-            }
-        },
-
-        /**
-         * update time and start status
-         */
-        take_update_time: function take_update_time(message_data){
-           
-            let status = message_data.value;
-
-            if(status == "fail") return;
-
-            // app.session.started = result.started;
-            app.session.world_state.current_period = message_data.current_period;
-            app.session.world_state.time_remaining = message_data.time_remaining;
-            app.session.world_state.timer_running = message_data.timer_running;
-            app.session.world_state.started = message_data.started;
-            app.session.world_state.finished = message_data.finished;
-           
-            // app.session.finished = result.finished;
-            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
-
-            app.update_phase_button_text();
-
-            //update player earnings and inventory if period has changed
-            if(message_data.period_is_over)
-            {
-                app.setup_pixi_tokens_for_current_period();
-                app.update_player_inventory();              
-                app.take_update_earnings(message_data.earnings);  
-            }
-
-            //update player status
-            for(let p in message_data.session_player_status)
-            {
-                let session_player = message_data.session_player_status[p];
-                app.session.world_state.session_players[p].interaction = session_player.interaction;
-                app.session.world_state.session_players[p].frozen = session_player.frozen;
-                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
-                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
-            }
-
-            //update player location
-            for(let p in message_data.current_locations)
-            {
-                let server_location = message_data.current_locations[p];
-
-                if(app.get_distance(server_location, app.session.world_state.session_players[p].current_location) > 1000)
-                {
-                    app.session.world_state.session_players[p].current_location = server_location;
-                }
-            }
-
-            //update barriers
-            app.update_barriers();
-        },
        
         //do nothing on when enter pressed for post
         onSubmit(){
@@ -450,20 +343,12 @@ let app = Vue.createApp({
         {%include "staff/staff_session/subjects/subjects_card.js"%}
         {%include "staff/staff_session/summary/summary_card.js"%}
         {%include "staff/staff_session/data/data_card.js"%}
-        {%include "staff/staff_session/interface/interface_card.js"%}
         {%include "staff/staff_session/replay/replay_card.js"%}
         {%include "staff/staff_session/the_feed/the_feed_card.js"%}
         {%include "staff/staff_session/chat_gpt/chat_gpt_card.js"%}
-        {%include "subject/subject_home/the_stage/pixi_setup.js"%}
-        {%include "subject/subject_home/the_stage/avatar.js"%}
-        {%include "subject/subject_home/the_stage/token.js"%}
         {%include "subject/subject_home/the_stage/helpers.js"%}
         {%include "subject/subject_home/the_stage/staff.js"%}
-        {%include "subject/subject_home/the_stage/text_emitter.js"%}
-        {%include "subject/subject_home/the_stage/transfer_beam.js"%}
-        
-        {%include "subject/subject_home/the_stage/move_objects.js"%}
- 
+
         {%include "js/help_doc.js"%}
     
         /** clear form error messages
