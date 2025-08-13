@@ -284,7 +284,6 @@ let app = Vue.createApp({
             app.setup_pixi_tokens_for_current_period();
             app.setup_pixi_ground();
             app.setup_pixi_subjects();
-            app.setup_pixi_wall();
             app.setup_pixi_barrier();
             app.update_subject_status_overlay();
             app.setup_pixi_minimap();
@@ -573,9 +572,8 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
         {%include "subject/subject_home/the_stage/transfer_beam.js"%}
         {%include "subject/subject_home/the_stage/notices.js"%}
-        {%include "subject/subject_home/the_stage/wall.js"%}
+        
         {%include "subject/subject_home/the_stage/move_objects.js"%}
-        {%include "subject/subject_home/the_stage/barriers.js"%}
         {%include "subject/subject_home/the_stage/ground.js"%}
         {%include "subject/subject_home/help_doc_subject.js"%}
         {%include "subject/subject_home/the_stage/chat_gpt.js"%}
