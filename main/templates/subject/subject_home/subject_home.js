@@ -282,9 +282,7 @@ let app = Vue.createApp({
         do_reload: function do_reload()
         {
             app.setup_pixi_tokens_for_current_period();
-            app.setup_pixi_ground();
             app.setup_pixi_subjects();
-            app.setup_pixi_barrier();
             app.update_subject_status_overlay();
             app.setup_pixi_minimap();
         },
@@ -459,21 +457,19 @@ let app = Vue.createApp({
                 }
             }
 
-            //add notices
-            for(let i in app.session.parameter_set.parameter_set_notices)
-            {
-                let notice = app.session.parameter_set.parameter_set_notices[i];
-
-                if(notice.start_period == app.session.world_state.current_period && 
-                   notice.start_time >= app.session.world_state.time_remaining &&
-                   app.notices_seen.indexOf(notice.id) === -1)
-                {
-                    app.add_notice(notice.text, notice.end_period, notice.end_time);
-                    app.notices_seen.push(notice.id);
-                }
-            }
-
-            //update any notices on screen
+            //add notices (notices removed from system)
+            // for(let i in app.session.parameter_set.parameter_set_notices)
+            // {
+            //     let notice = app.session.parameter_set.parameter_set_notices[i];
+                
+            //     if(notice.start_period == app.session.world_state.current_period && 
+            //        notice.start_time >= app.session.world_state.time_remaining &&
+            //        app.notices_seen.indexOf(notice.id) === -1)
+            //     {
+            //         app.add_notice(notice.text, notice.end_period, notice.end_time);
+            //         app.notices_seen.push(notice.id);
+            //     }
+            // }            //update any notices on screen
             app.update_notices();
 
             //update barriers
@@ -571,10 +567,9 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/subject_overlay.js"%}
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
         {%include "subject/subject_home/the_stage/transfer_beam.js"%}
-        {%include "subject/subject_home/the_stage/notices.js"%}
         
         {%include "subject/subject_home/the_stage/move_objects.js"%}
-        {%include "subject/subject_home/the_stage/ground.js"%}
+
         {%include "subject/subject_home/help_doc_subject.js"%}
         {%include "subject/subject_home/the_stage/chat_gpt.js"%}
 

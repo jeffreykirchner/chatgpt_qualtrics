@@ -143,22 +143,6 @@ class ParameterSet(models.Model):
 
             self.update_player_count()
 
-            #parameter set notices
-            self.parameter_set_notices.all().delete()
-            new_parameter_set_notices = new_ps.get("parameter_set_notices")
-
-            for i in new_parameter_set_notices:
-                p = main.models.ParameterSetNotice.objects.create(parameter_set=self)
-                p.from_dict(new_parameter_set_notices[i])
-
-            #parameter set grounds
-            self.parameter_set_grounds.all().delete()
-            new_parameter_set_grounds = new_ps.get("parameter_set_grounds")
-
-            for i in new_parameter_set_grounds:
-                p = main.models.ParameterSetGround.objects.create(parameter_set=self)
-                p.from_dict(new_parameter_set_grounds[i])
-
             self.json_for_session = None
             self.save()
             
@@ -262,8 +246,6 @@ class ParameterSet(models.Model):
         self.save()
     
     def update_json_fk(self, update_players=False, 
-                             update_notices=False, 
-                             update_grounds=False,
                              update_groups=False):
         '''
         update json model
@@ -271,14 +253,6 @@ class ParameterSet(models.Model):
         if update_players:
             self.json_for_session["parameter_set_players_order"] = list(self.parameter_set_players.all().values_list('id', flat=True))
             self.json_for_session["parameter_set_players"] = {p.id : p.json() for p in self.parameter_set_players.all()}
-
-        if update_grounds:
-            self.json_for_session["parameter_set_grounds_order"] = list(self.parameter_set_grounds.all().values_list('id', flat=True))
-            self.json_for_session["parameter_set_grounds"] = {str(p.id) : p.json() for p in self.parameter_set_grounds.all()}
-
-        if update_notices:
-            self.json_for_session["parameter_set_notices_order"] = list(self.parameter_set_notices.all().values_list('id', flat=True))
-            self.json_for_session["parameter_set_notices"] = {str(p.id) : p.json() for p in self.parameter_set_notices.all()}    
 
         if update_groups:
             self.json_for_session["parameter_set_groups_order"] = list(self.parameter_set_groups.all().values_list('id', flat=True))
@@ -295,8 +269,6 @@ class ParameterSet(models.Model):
             self.json_for_session = {}
             self.update_json_local()
             self.update_json_fk(update_players=True, 
-                                update_notices=True,
-                                update_grounds=True,
                                 update_groups=True)
 
         return self.json_for_session

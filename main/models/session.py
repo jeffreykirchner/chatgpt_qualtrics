@@ -217,20 +217,22 @@ class Session(models.Model):
                 
                 go = True
 
-                #place token in random location over a grass area
-                while go:
-                    token = {"current_location" : {
-                            "x":random.randint(25, self.parameter_set.world_width-25),
-                            "y":random.randint(25, self.parameter_set.world_height-25)},
-                            "status":"available",}
-                    
-                    for g in parameter_set["parameter_set_grounds"]:
-                        ground = parameter_set["parameter_set_grounds"][g]
-                        if ground["texture"] == "grass_tex":
-                            if (token["current_location"]["x"] > ground["x"] and token["current_location"]["x"] < ground["x"] + ground["width"]) and \
-                               (token["current_location"]["y"] > ground["y"] and token["current_location"]["y"] < ground["y"] + ground["height"]):
-                                go = False
-                                break
+                #place token in random location (ground functionality removed)
+                token = {"current_location" : {
+                        "x":random.randint(25, self.parameter_set.world_width-25),
+                        "y":random.randint(25, self.parameter_set.world_height-25)},
+                        "status":"available",}
+                
+                # Ground texture checking removed - ParameterSetGround no longer exists
+                # for g in parameter_set["parameter_set_grounds"]:
+                #     ground = parameter_set["parameter_set_grounds"][g]
+                #     if ground["texture"] == "grass_tex":
+                #         if (token["current_location"]["x"] > ground["x"] and token["current_location"]["x"] < ground["x"] + ground["width"]) and \
+                #            (token["current_location"]["y"] > ground["y"] and token["current_location"]["y"] < ground["y"] + ground["height"]):
+                #             go = False
+                #             break
+                
+                go = False  # Always place token now that ground checking is removed
                 
                 tokens[str(i)][str(j)] = token
             

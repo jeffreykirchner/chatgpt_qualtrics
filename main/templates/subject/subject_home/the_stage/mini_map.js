@@ -34,17 +34,17 @@ setup_pixi_minimap: function setup_pixi_minimap()
     
     pixi_mini_map.container.addChild(pixi_mini_map_bg);
 
-    //grounds
-    for(const i in app.session.parameter_set.parameter_set_grounds){
-        const ground = app.session.parameter_set.parameter_set_grounds[i];
+    //grounds - DISABLED (ParameterSetGround removed)
+    // for(const i in app.session.parameter_set.parameter_set_grounds){
+    //     const ground = app.session.parameter_set.parameter_set_grounds[i];
 
-        let temp_ground = new PIXI.Graphics();
+    //     let temp_ground = new PIXI.Graphics();
         
-        temp_ground.rect(ground.x * scale, ground.y * scale, ground.width * scale, ground.height * scale);
-        temp_ground.fill(ground.tint);
+    //     temp_ground.rect(ground.x * scale, ground.y * scale, ground.width * scale, ground.height * scale);
+    //     temp_ground.fill(ground.tint);
 
-        pixi_mini_map.container.addChild(temp_ground);
-    }
+    //     pixi_mini_map.container.addChild(temp_ground);
+    // }
 
     //walls (removed - walls have been removed from the system)
     }
