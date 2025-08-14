@@ -119,7 +119,7 @@ class Session(models.Model):
         
         session_periods = []
 
-        for i in range(self.parameter_set.period_count):
+        for i in range(20):  # hardcoded default period count replacing period_count
             session_periods.append(main.models.SessionPeriod(session=self, period_number=i+1))
         
         main.models.SessionPeriod.objects.bulk_create(session_periods)
@@ -171,7 +171,7 @@ class Session(models.Model):
                             "session_players_order":[],
                             "current_period":1,
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
-                            "time_remaining":self.parameter_set.period_length,
+                            "time_remaining":60,  # hardcoded default period length replacing period_length
                             "timer_running":False,
                             "timer_history":[],
                             "started":True,
@@ -188,12 +188,10 @@ class Session(models.Model):
         
         #session players
         for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
-                                                                                            'parameter_set_player__start_x',
-                                                                                            'parameter_set_player__start_y',
                                                                                             'parameter_set_player__id' ):
             v = {}
 
-            v['current_location'] = {'x':i['parameter_set_player__start_x'], 'y':i['parameter_set_player__start_y']}
+            v['current_location'] = {'x':50, 'y':50}  # hardcoded default start location replacing start_x/start_y
             v['target_location'] = v['current_location']
             v['inventory'] = inventory
             v['tractor_beam_target'] = None
@@ -208,34 +206,10 @@ class Session(models.Model):
         
         parameter_set  = self.parameter_set.json_for_session
 
-        #tokens
+        #tokens - token functionality removed since tokens_per_period, world_width, world_height fields were removed
         tokens = {}
         for i in self.session_periods.all():
             tokens[str(i)] = {}
-
-            for j in range(self.parameter_set.tokens_per_period):
-                
-                go = True
-
-                #place token in random location (ground functionality removed)
-                token = {"current_location" : {
-                        "x":random.randint(25, self.parameter_set.world_width-25),
-                        "y":random.randint(25, self.parameter_set.world_height-25)},
-                        "status":"available",}
-                
-                # Ground texture checking removed - ParameterSetGround no longer exists
-                # for g in parameter_set["parameter_set_grounds"]:
-                #     ground = parameter_set["parameter_set_grounds"][g]
-                #     if ground["texture"] == "grass_tex":
-                #         if (token["current_location"]["x"] > ground["x"] and token["current_location"]["x"] < ground["x"] + ground["width"]) and \
-                #            (token["current_location"]["y"] > ground["y"] and token["current_location"]["y"] < ground["y"] + ground["height"]):
-                #             go = False
-                #             break
-                
-                go = False  # Always place token now that ground checking is removed
-                
-                tokens[str(i)][str(j)] = token
-            
 
         self.world_state["tokens"] = tokens
 
@@ -247,7 +221,7 @@ class Session(models.Model):
         '''
         self.started = False
 
-        #self.time_remaining = self.parameter_set.period_length
+        #self.time_remaining = 60  # hardcoded default period length replacing period_length
         #self.timer_running = False
         self.world_state ={}
         self.save()

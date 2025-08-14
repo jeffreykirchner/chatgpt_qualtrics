@@ -117,11 +117,11 @@ subject_pointer_right_click: function subject_pointer_right_click(event)
         let obj = app.session.world_state.session_players[i];
 
         if(app.get_distance(obj.current_location, local_pos) < 100 &&
-            app.get_distance(obj.current_location, local_player.current_location) <= app.session.parameter_set.interaction_range+125)
+            app.get_distance(obj.current_location, local_player.current_location) <= 300+125)
         {
 
-            if(app.session.world_state.time_remaining > app.session.parameter_set.period_length &&
-                app.session.world_state.current_period % app.session.parameter_set.break_frequency == 0)
+            if(app.session.world_state.time_remaining > 60 &&  // hardcoded period_length
+                app.session.world_state.current_period % 7 == 0)  // hardcoded break_frequency
             {
                 app.add_text_emitters("No interactions while on break.", 
                                         obj.current_location.x, 

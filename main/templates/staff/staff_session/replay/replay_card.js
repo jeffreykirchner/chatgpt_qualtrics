@@ -21,7 +21,7 @@ take_load_session_events(message_data)
         app.session_events = message_data.session_events;
 
         app.replay_current_period = 1;
-        app.replay_time_remaining = app.session.parameter_set.period_length;
+        app.replay_time_remaining = 60;  // hardcoded period_length
 
         app.replay_load_world_state();
     }
@@ -75,7 +75,7 @@ replay_mode_play: function replay_mode_play()
     {
         app.replay_time_remaining--;
     }
-    else if(app.replay_current_period == app.session.parameter_set.period_count)
+    else if(app.replay_current_period == 20)  // hardcoded period_count
     {
         //end of the session
         return;
@@ -84,11 +84,11 @@ replay_mode_play: function replay_mode_play()
     {
         app.replay_current_period++;
 
-        app.replay_time_remaining = app.session.parameter_set.period_length;
+        app.replay_time_remaining = 60;  // hardcoded period_length
 
-        if(app.replay_current_period % app.session.parameter_set.break_frequency == 0)
+        if(app.replay_current_period % 7 == 0)  // hardcoded break_frequency
         {
-            app.replay_time_remaining += app.session.parameter_set.break_length;
+            app.replay_time_remaining += 100;  // hardcoded break_length
         }
     }
 
@@ -104,7 +104,7 @@ reset_replay: function reset_replay()
     if (app.replay_timeout) clearTimeout(app.replay_timeout);
 
     app.replay_current_period = 1;
-    app.replay_time_remaining = app.session.parameter_set.period_length;
+    app.replay_time_remaining = 60;  // hardcoded period_length
 
     app.replay_load_world_state();
     app.the_feed = [];
@@ -173,7 +173,7 @@ advance_period: function advance_period(direction)
 {
     if(direction == 1)
     {
-        if(app.replay_current_period < app.session.parameter_set.period_count)
+        if(app.replay_current_period < 20)  // hardcoded period_count
         {
             app.replay_current_period++;
         }
@@ -186,11 +186,11 @@ advance_period: function advance_period(direction)
         }
     }
 
-    app.replay_time_remaining = app.session.parameter_set.period_length;
+    app.replay_time_remaining = 60;  // hardcoded period_length
 
-    if(app.replay_current_period % app.session.parameter_set.break_frequency == 0)
+    if(app.replay_current_period % 7 == 0)  // hardcoded break_frequency
     {
-        app.replay_time_remaining += app.session.parameter_set.break_length;
+        app.replay_time_remaining += 100;  // hardcoded break_length
     }
 
     app.process_replay_events(true);

@@ -358,7 +358,7 @@ class SubjectUpdatesMixin():
             error_message.append({"id":"tractor_beam", "message": "Invalid data, try again."})
         
         #check if on break
-        if self.world_state_local["time_remaining"] > self.parameter_set_local["period_length"]:
+        if self.world_state_local["time_remaining"] > 60:  # hardcoded period_length
             status = "fail"
             error_message.append({"id":"field_claim", "message": "You cannot interact during the break."})
 
@@ -402,9 +402,9 @@ class SubjectUpdatesMixin():
             target_player["state_payload"] = {}
 
             source_player['tractor_beam_target'] = target_player_id
-            source_player['interaction'] = self.parameter_set_local['interaction_length']
+            source_player['interaction'] = 10  # hardcoded value replacing interaction_length
 
-            target_player['interaction'] = self.parameter_set_local['interaction_length']
+            target_player['interaction'] = 10  # hardcoded value replacing interaction_length
 
             result["player_id"] = player_id
             result["target_player_id"] = target_player_id
@@ -469,7 +469,7 @@ class SubjectUpdatesMixin():
 
         #check if on break
         if status == "success":
-            if self.world_state_local["time_remaining"] > self.parameter_set_local["period_length"]:
+            if self.world_state_local["time_remaining"] > 60:  # hardcoded period_length
                 status = "fail"
                 error_message = "No interactions on break."
 
@@ -541,8 +541,8 @@ class SubjectUpdatesMixin():
             target_player['frozen'] = False
 
             if interaction_type == 'take':
-                source_player["cool_down"] = self.parameter_set_local["cool_down_length"]
-                target_player["cool_down"] = self.parameter_set_local["cool_down_length"]
+                source_player["cool_down"] = 10  # hardcoded value replacing cool_down_length
+                target_player["cool_down"] = 10  # hardcoded value replacing cool_down_length
 
             source_player['tractor_beam_target'] = None
 
@@ -606,7 +606,7 @@ class SubjectUpdatesMixin():
             source_player['frozen'] = False
             target_player['frozen'] = False
 
-            source_player["cool_down"] = self.parameter_set_local["cool_down_length"]
+            source_player["cool_down"] = 10  # hardcoded value replacing cool_down_length
 
             source_player['tractor_beam_target'] = None
 

@@ -83,11 +83,11 @@ class TimerMixin():
         result = {"earnings":{}}
 
         #check session over
-        if self.world_state_local["current_period"] > self.parameter_set_local["period_count"] or \
-            (self.world_state_local["current_period"] == self.parameter_set_local["period_count"] and
+        if self.world_state_local["current_period"] > 20 or \
+            (self.world_state_local["current_period"] == 20 and
              self.world_state_local["time_remaining"] <= 1):
 
-            self.world_state_local["current_period"] = self.parameter_set_local["period_count"]
+            self.world_state_local["current_period"] = 20  # hardcoded period_count
             self.world_state_local["time_remaining"] = 0
             self.world_state_local["timer_running"] = False
             
@@ -135,12 +135,12 @@ class TimerMixin():
                 #find current period
                 current_period = 1
                 temp_time = 0          #total of period lengths through current period.
-                for i in range(1, self.parameter_set_local["period_count"]+1):
-                    temp_time += self.parameter_set_local["period_length"]
+                for i in range(1, 21):  # hardcoded period_count + 1
+                    temp_time += 60  # hardcoded period_length
 
                     #add break times
-                    if i % self.parameter_set_local["break_frequency"] == 0:
-                        temp_time += self.parameter_set_local["break_length"]
+                    if i % 7 == 0:  # hardcoded break_frequency
+                        temp_time += 100  # hardcoded break_length
                     
                     if temp_time > total_time:
                         break
