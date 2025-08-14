@@ -116,13 +116,6 @@ class Session(models.Model):
 
         self.started = True
         self.start_date = datetime.now()
-        
-        session_periods = []
-
-        for i in range(20):  # hardcoded default period count replacing period_count
-            session_periods.append(main.models.SessionPeriod(session=self, period_number=i+1))
-        
-        main.models.SessionPeriod.objects.bulk_create(session_periods)
 
         self.save()
 
@@ -169,35 +162,17 @@ class Session(models.Model):
                             "last_store":str(datetime.now()),
                             "session_players":{},
                             "session_players_order":[],
-                            "current_period":1,
-                            "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
-                            "time_remaining":60,  # hardcoded default period length replacing period_length
-                            "timer_running":False,
-                            "timer_history":[],
+                            "current_experiment_phase":ExperimentPhase.NAMES,
                             "started":True,
-                            "finished":False,
-                            "session_periods":{str(i.id) : i.json() for i in self.session_periods.all()},
-                            "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
-                            "tokens":{},}
+                            "finished":False,}
         
         inventory = {str(i):0 for i in list(self.session_periods.all().values_list('id', flat=True))}
-
-        #session periods
-        for i in self.world_state["session_periods"]:
-            self.world_state["session_periods"][i]["consumption_completed"] = False
         
         #session players
         for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
                                                                                             'parameter_set_player__id' ):
             v = {}
 
-            v['current_location'] = {'x':50, 'y':50}  # hardcoded default start location replacing start_x/start_y
-            v['target_location'] = v['current_location']
-            v['inventory'] = inventory
-            v['tractor_beam_target'] = None
-            v['frozen'] = False
-            v['cool_down'] = 0
-            v['interaction'] = 0
             v['earnings'] = 0
             v['parameter_set_player_id'] = i['parameter_set_player__id']
             
@@ -205,13 +180,6 @@ class Session(models.Model):
             self.world_state["session_players_order"].append(i['id'])
         
         parameter_set  = self.parameter_set.json_for_session
-
-        #tokens - token functionality removed since tokens_per_period, world_width, world_height fields were removed
-        tokens = {}
-        for i in self.session_periods.all():
-            tokens[str(i)] = {}
-
-        self.world_state["tokens"] = tokens
 
         self.save()
 
