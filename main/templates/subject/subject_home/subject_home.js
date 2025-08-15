@@ -189,16 +189,16 @@ let app = Vue.createApp({
             {%if session.parameter_set.test_mode%} setTimeout(app.do_test_mode, app.random_number(1000 , 1500)); {%endif%}
 
             // if game is finished show modal
-            if( app.session.world_state.current_experiment_phase == 'Names')
-            {
-                app.show_end_game_modal();
-            }
-            else if(app.session.world_state.current_experiment_phase == 'Done' && 
-                    app.session.parameter_set.survey_required && 
-                    !app.session_player.survey_complete)
-            {
-                window.location.replace(app.session_player.survey_link);
-            }
+            // if( app.session.world_state.current_experiment_phase == 'Names')
+            // {
+            //     app.show_end_game_modal();
+            // }
+            // else if(app.session.world_state.current_experiment_phase == 'Done' && 
+            //         app.session.parameter_set.survey_required && 
+            //         !app.session_player.survey_complete)
+            // {
+            //     window.location.replace(app.session_player.survey_link);
+            // }
 
             if(document.getElementById('instructions_frame_a'))
             {
@@ -211,6 +211,12 @@ let app = Vue.createApp({
                 )
 
                 app.scroll_update();
+            }
+
+            if(app.session.parameter_set.survey_required)
+            {
+                //open survey link in new tab
+                window.open(app.session_player.survey_link, '_blank');
             }
 
           
@@ -300,7 +306,6 @@ let app = Vue.createApp({
         show_end_game_modal: function show_end_game_modal(){
             if(app.end_game_modal_visible) return;
    
-            app.interaction_modal.hide();
             app.help_modal.hide();
 
             app.end_game_modal.toggle();
