@@ -1,5 +1,5 @@
-# Multi-User Django Websocket Template
-Template for a multi-user Django Channels experiment.
+# ChatGPT Qualtrics
+Qualtrics + ChatGPT experiment.
 
 ## Local setup on Windows:
 
