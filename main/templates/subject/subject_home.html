@@ -11,10 +11,9 @@
 </script>
 
 <style>
-
     .chat {       
         width: 100%;
-        height: 300px;
+        height: 800px;
         word-breaK:break-word;
         overflow-y:scroll;
         background-color: ghostwhite;
@@ -25,13 +24,6 @@
     .instructions{
         height: 300px;
         overflow-y:scroll;
-    }
-
-    .field {
-        height: 800px;
-        background-color: white; 
-        width: 100%;
-        max-width: 1850px;
     }
 
     .assistant_chat_gpt{
@@ -73,7 +65,7 @@
     <!-- the stage -->
     <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.world_state.current_experiment_phase != 'Done'">
         <div class="col-md">
-       
+            {%include "subject/subject_home/the_stage/the_stage_card.html"%}
         </div>
     </div>
 

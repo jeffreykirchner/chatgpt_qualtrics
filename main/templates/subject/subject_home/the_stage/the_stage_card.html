@@ -1,0 +1,99 @@
+<div class="card" id="graph_card" >                  
+    <div class="card-header fw-bold">                
+        <span class="align-middle"></span>
+
+        <span class="float-end">
+            <span v-show="reconnecting" class="me-1">
+                Connecting <i class="fas fa-cog fa-spin fa-1x"></i>
+            </span>
+        </span>
+
+        <span class="float-end">
+            {%if session.parameter_set.test_mode%}
+                <span class="form-check" v-if="is_subject">
+                    <input class="form-check-input"
+                           type="checkbox" 
+                           value="" 
+                           id="testModeCheckBox" 
+                           v-model="test_mode">
+                    <label class="form-check-label" for="testModeCheckBox">
+                    Test Mode On
+                    </label>
+                </span>
+            {%endif%}
+
+            <button type="button" 
+                    class="btn btn-link" 
+                    title="Show Help" 
+                    v-on:click="send_load_help_doc_subject('main_screen')">
+                <i class="far fa-question-circle"></i> 
+            </button>
+        </span>
+        
+    </div>
+    <div class="card-body">
+        
+        <div class="text-center text-secondary mb-2">
+                    Hi, I am a chatbot and here to help you. Ask me anything, however, keep in mind that I cannot see your screen. This means you must explain what you see before asking me about it.   
+                </div> 
+
+                <div class="d-flex chat pe-4">
+                        
+                    <div v-for="(c, index) in chat_gpt_history" 
+                        :key="c"
+                        v-bind:class="c.role=='user' ? 'user_chat_gpt' : 'assistant_chat_gpt' "
+                        v-bind:id="'chat_gpt_message_' + index">
+                        <div v-if="c.role=='user'">
+                            [[c.content]]
+                        </div>
+                        <div v-else>                            
+                            <span v-html="c.content"></span>
+                        </div>
+                        <!-- <span v-if="index == 0">[[scroll_chat_gpt_history_to_bottom('chat_message_' + index)]]</span> -->
+                    </div>                       
+                </div>
+
+                <div class="row justify-content-center mt-2">
+                    <div class="col-md-10 text-center">
+                        
+                        <div class="input-group">
+                            <input type="text" 
+                                class="form-control form-control" 
+                                placeholder="Chat Text" 
+                                v-model="chat_gpt_text"
+                                id="id_chat_text"
+                                aria-label="Chat Text"                           
+                                v-on:keyup.enter="send_process_chat_gpt_prompt()"
+                                maxlength="100"
+                                aria-describedby="send_chat_gpt_id">
+                            <button class="btn btn-outline-primary"
+                                    type="button" 
+                                    id="send_chat_gpt_id" 
+                                    title="Send your chat message."
+                                    v-bind:disabled="reconnecting || chat_gpt_working || session.started===false || session.world_state.finished"
+                                    v-on:click="send_process_chat_gpt_prompt()"><span v-html="chat_gpt_button_text"></span></button>
+                            <button class="btn btn-outline-primary"
+                                    type="button" 
+                                    id="clear_chat_gpt_id" 
+                                    title="Clear chat history."
+                                    v-bind:disabled="reconnecting || chat_gpt_working || session.started===false || session.world_state.finished"
+                                    v-on:click="send_clear_chat_gpt_history()">Clear History <i class="fas fa-eraser"></i></button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-md-10 text-end pe-4 text-secondary">
+                        [[chat_gpt_text.length]]/100
+                    </div>
+                </div>
+
+                <div class="row mt-2 mb-2 fw-bold" v-if="chat_gpt_error">
+                    <div class="col text-center">                  
+                        Error: [[chat_gpt_error]]  
+                    </div>
+                </div>
+       
+    </div>                    
+</div> 
